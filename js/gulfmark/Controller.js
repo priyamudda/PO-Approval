@@ -99,75 +99,79 @@ createAlertMessage = function(header, message, type, e) {
 function loadPOListviewInbox(){
 //$('#section-loader').show();
 //$('#Polistviewtbl').empty();
+	alert("1");
 $("#approvedMainBlock").removeClass("active");
+alert("2");
 $("#rejectedMainBlock").removeClass("active");
+alert("3");
 $("#inboxMainBlock").addClass("active");
+alert("4");
 var username = localStorage.getItem("username");
+alert("5" + username);
 //Username="ANOOP";
-var xml;
-$.ajax(
-    {
-       
-        url: "http://50.194.79.186:8080/sap/inv/opu/odata/sap/Z_INTERNAL_APPS_SRV/z_get_polist/?$filter=Username eq '"+username+"' and Value eq '001'",
-        type: 'GET',
-        contentType: "application/xml;charset=utf-8",
-        dataType: "",
-        cache: false,
-        success: function (data) {
-            $('#Polistviewtbl').empty();
-            var POlistreponse =  $(data).find("content");
-          if (POlistreponse.length == 0){
-              //  msg = "Sorry,no data available for the corresponding user";
-          $("#noItems").css("display", "block");
-          }
-          else {
-              $("#noItems").css("display", "none");
-            i = 0;
-            $(data).find("content").each(function () {
-                $(this).find("m\\:properties, properties").each(function () {
-                    var $info = $(this);
-                    var ebeln = $info.find("d\\:ebeln, ebeln").text();
-	                 bsart = $info.find("d\\:bsart, bsart").text();
-	                var batxt = $info.find("d\\:batxt, batxt").text();
-	                var uname = $info.find("d\\:uname, uname").text();
-	                 netwr = $info.find("d\\:netwr, netwr").text();
-	                var wi_id = $info.find("d\\:wi_id, wi_id").text();
-                         lifnr = $info.find("d\\:lifnr, lifnr").text();
-                        var ernam = $info.find("d\\:ernam, ernam").text();
-                        var requnameid = $info.find("d\\:requname, requname").text();
-                         requestor = $info.find("d\\:requestor, requestor").text();
-                        //localStorage["requname"] = JSON.stringify(requname);
-                        //$("WiId").html(wi_id);
-//                        localStorage.setItem("ebeln", ebeln);
-//                        localStorage.setItem("netwr", netwr);
-//                        localStorage.setItem("bsart", bsart);
-//                        localStorage.setItem("lifnr", lifnr);
-//                        localStorage.setItem("ernam", ernam);
-//                        localStorage.setItem("requname", requname);
-                       // localStorage.setItem("requestor", requestor);
-                        $('#Polistviewtbl').append('<tr id="test"><td> <a href="javascript:showPODetails(\''+ebeln+'\',\''+requestor+'\',\''+netwr+'\',\''+bsart+'\',\''+lifnr+'\',\'inboxMainBlock\',\''+wi_id+'\',\''+requnameid+'\')"><u><b>' + ebeln + '</b></u></a></td><td>'+requestor+'</td><td>'+bsart+'</td><td>'+batxt+'</td><td>'+netwr+'</td></tr>');
-//                        $("#txtNetwr").html(netwr);
-//		                	$("#txtBsart").html(bsart);	
-//		                	$("#lifnr").html(lifnr);
-//		                  	$("#ernam").html(ernam);
-//		                  	$("#requname").html(requname);
-//                                        $("#txtebeln").html(ebeln);
-//                                        $("#requestor").html(requestor);
-                });
-            });
-       if (navigator.userAgent.match("Android") || navigator.userAgent.match("iPhone")
-        || navigator.userAgent.match("iPod")) {
-//               $("#openpodate").hide();
-//               $('#GROpenPOprttbl td:nth-child(4)').hide();          
-        };
-          }
-        },
-        error: function (XMLHttpRequest, textStatus, errorThrown) {
-            createAlertMessage("Alert", "Error" , "alert", "e");
-        }
-    });
-//$('#section-loader').hide();
-}
+
+
+OData.read( 
+		  "http://50.194.79.186:8000/sap/opu/odata/sap/Z_INTERNAL_APPS_SRV/z_get_polist/?$filter=Username eq 'RKOMIRISETTY' and Value eq '002'", 
+		  function (data) { 
+			  $('#Polistviewtbl').empty();
+	            var POlistreponse =  $(data).find("content");
+	            alert("POlistreponse "+POlistreponse);
+	          if (POlistreponse.length == 0){
+	              //  msg = "Sorry,no data available for the corresponding user";
+	          $("#noItems").css("display", "block");
+	          }
+	          else {
+	              $("#noItems").css("display", "none");
+	            i = 0;
+	            $.each(data.results, function(ix, l) 
+			    		{ 
+	            	var ebeln =l.Ebeln;
+	                 bsart = l.Bsart;
+	                var batxt = l.Batxt;
+	                var uname = l.Uname;
+	                 netwr = l.Netwr;
+	                var wi_id = l.wi_id;
+                        lifnr = l.Lifnr;
+                       var ernam = l.Lifnr;
+                       var requnameid = l.Requname;
+                        requestor = l.Requestor;
+                       
+                      // $('#Polistviewtbl').append('<tr id="test"><td> <a href="javascript:showPODetails(\''+ebeln+'\',\''+requestor+'\',\''+netwr+'\',\''+bsart+'\',\''+lifnr+'\',\'inboxMainBlock\',\''+wi_id+'\',\''+requnameid+'\')"><u><b>' + ebeln + '</b></u></a></td><td>'+requestor+'</td><td>'+bsart+'</td><td>'+batxt+'</td><td>'+netwr+'</td></tr>');
+
+	     
+	    alert("TYPE Ebeln-----"+l+"--"+ebeln);
+	    alert("TYPE basrt-----"+l+"--"+bsart);
+	    alert("TYPE batxt-----"+l+"--"+batxt);
+	    alert("TYPE uname-----"+l+"--"+uname);
+	    alert("TYPE netwr-----"+l+"--"+netwr);
+	    alert("TYPE wi_id-----"+l+"--"+wi_id);
+	    alert("TYPE lifnr-----"+l+"--"+lifnr); 
+	    alert("TYPE ernam-----"+l+"--"+ernam);
+	    alert("TYPE requnameid-----"+l+"--"+requestor);
+	    alert("TYPE requestor-----"+l+"--"+requestor);
+	    
+	    
+			    		
+
+		   // alert("TYPE-----"+type)
+		    
+		  });
+	            
+	            if (navigator.userAgent.match("Android") || navigator.userAgent.match("iPhone")
+	                    || navigator.userAgent.match("iPod")) {
+//	                           $("#openpodate").hide();
+//	                           $('#GROpenPOprttbl td:nth-child(4)').hide();          
+	                    };
+	          } 
+
+
+},
+function(err) {
+	createAlertMessage("Alert", "Error" , "alert", "e");
+                }
+);
+		  }
 
 function loadPOListviewApproved(){
 //$('#section-loader').show();
