@@ -114,12 +114,12 @@ var username = localStorage.getItem("username");
 
 
 OData.read( 
-		  "http://50.194.79.186:8000/sap/opu/odata/sap/Z_INTERNAL_APPS_SRV/z_get_polist/?$filter=Username eq 'PMUDDA' and Value eq '002'", 
+		  "http://50.194.79.186:8000/sap/opu/odata/sap/Z_INTERNAL_APPS_SRV/z_get_polist/?$filter=Username eq '"+username+"' and Value eq '001'", 
 		  function (data) { 
 			  $('#Polistviewtbl').empty();
 	            var POlistreponse =  data.results.length;
 	           // alert("POlistreponse "+POlistreponse.length);
-	            alert("Data "+data.results.length);
+	           // alert("Data "+data.results.length);
 	            
 	          if (POlistreponse == 0){
 	              //  msg = "Sorry,no data available for the corresponding user";
