@@ -107,24 +107,27 @@ $("#rejectedMainBlock").removeClass("active");
 $("#inboxMainBlock").addClass("active");
 
 var username = localStorage.getItem("username");
+//var username = "PMUDDA";
 
-alert("5" + username);
+
 //Username="ANOOP";
 
 
 OData.read( 
-		  "http://50.194.79.186:8000/sap/opu/odata/sap/Z_INTERNAL_APPS_SRV/z_get_polist/?$filter=Username eq 'PMUDDA' and Value eq '001'", 
+		  "http://50.194.79.186:8000/sap/opu/odata/sap/Z_INTERNAL_APPS_SRV/z_get_polist/?$filter=Username eq 'PMUDDA' and Value eq '002'", 
 		  function (data) { 
 			  $('#Polistviewtbl').empty();
-	            var POlistreponse =  $(data).find("content");
-	            alert("POlistreponse "+POlistreponse.length);
-	          if (POlistreponse.length == 0){
+	            var POlistreponse =  data.results.length;
+	           // alert("POlistreponse "+POlistreponse.length);
+	            alert("Data "+data.results.length);
+	            
+	          if (POlistreponse == 0){
 	              //  msg = "Sorry,no data available for the corresponding user";
 	          $("#noItems").css("display", "block");
 	          }
 	          else {
 	              $("#noItems").css("display", "none");
-	            i = 0;
+	            
 	            $.each(data.results, function(ix, l) 
 			    		{ 
 	            	var ebeln =l.Ebeln;
@@ -138,10 +141,10 @@ OData.read(
                        var requnameid = l.Requname;
                         requestor = l.Requestor;
                        
-                      // $('#Polistviewtbl').append('<tr id="test"><td> <a href="javascript:showPODetails(\''+ebeln+'\',\''+requestor+'\',\''+netwr+'\',\''+bsart+'\',\''+lifnr+'\',\'inboxMainBlock\',\''+wi_id+'\',\''+requnameid+'\')"><u><b>' + ebeln + '</b></u></a></td><td>'+requestor+'</td><td>'+bsart+'</td><td>'+batxt+'</td><td>'+netwr+'</td></tr>');
+                       $('#Polistviewtbl').append('<tr id="test"><td> <a href="javascript:showPODetails(\''+ebeln+'\',\''+requestor+'\',\''+netwr+'\',\''+bsart+'\',\''+lifnr+'\',\'inboxMainBlock\',\''+wi_id+'\',\''+requnameid+'\')"><u><b>' + ebeln + '</b></u></a></td><td>'+requestor+'</td><td>'+bsart+'</td><td>'+batxt+'</td><td>'+netwr+'</td></tr>');
 
 	     
-	    alert("TYPE Ebeln-----"+l+"--"+ebeln);
+/*	    alert("TYPE Ebeln-----"+l+"--"+ebeln);
 	    alert("TYPE basrt-----"+l+"--"+bsart);
 	    alert("TYPE batxt-----"+l+"--"+batxt);
 	    alert("TYPE uname-----"+l+"--"+uname);
@@ -151,10 +154,7 @@ OData.read(
 	    alert("TYPE ernam-----"+l+"--"+ernam);
 	    alert("TYPE requnameid-----"+l+"--"+Requname);
 	    alert("TYPE requestor-----"+l+"--"+requestor);
-	    
-	    
-			    		
-
+*/
 		   // alert("TYPE-----"+type)
 		    
 		  });
