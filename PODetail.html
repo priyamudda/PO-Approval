@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1" />
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1" />
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+        <meta name="HandheldFriendly" content="true">
+        <!--[if lt IE 9]>
+                <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+        <![endif]-->
+        <!--[if gte IE 9]><!-->
+        <script src="//code.jquery.com/jquery-2.0.3.js"></script>
+        <!--<![endif]-->
+        <title>Detail view</title>
+        <!--        [if IE]
+                    <link href="stylesheets/ie.css" media="screen, projection" rel="stylesheet" type="text/css" />
+                [endif]-->
+        <script type="text/javascript" charset="utf-8" src="js/frameworks/jquery-2.0.3.js"></script>
+        <script type="text/javascript" charset="utf-8" src="js/frameworks/datajs-1.1.1.js"></script>
+        <script type="text/javascript" charset="utf-8" src="js/frameworks/jquery-1.9.1.js"></script>
+        <script type="text/javascript" charset="utf-8" src="js/frameworks/jquery-ui-1.10.3.custom.js"></script>
+        <link href="stylesheets/jquery-ui-1.10.3.custom.css" rel="stylesheet" type="text/css" />
+        <!--        <script type="text/javascript" charset="utf-8" src="js/gulfmark/Controller.js?version=1.0.0.2"></script>-->
+        <script type="text/javascript" charset="utf-8" src="js/frameworks/json2.js"></script>
+        <link href="stylesheets/invoice-home.css" media="screen, projection" rel="stylesheet" type="text/css" />
+        <link href="stylesheets/fonts.css" media="screen, projection" rel="stylesheet" type="text/css" />
+        <link href="stylesheets/ie.css" media="screen, projection" rel="stylesheet" type="text/css" />
+        <link href="stylesheets/model.css" media="screen, projection" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+        <link href="stylesheets/invoice-details.css" media="screen, projection" rel="stylesheet" type="text/css" />
+        <script src="//code.jquery.com/jquery-1.9.1.js"></script>
+        <script src="//code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+
+        <script>
+            var totalcost;
+            var type;
+            var vendor;
+            var requster;
+            var id;
+            var wi_id;
+            var username;
+            var ponumber;
+            var podateformatstring;
+            var requnameid;
+            $(window).load(function() {
+                Reset();
+            });
+            $(document).ready(function() {
+
+                $("#noItems").css("display", "none");
+                ApproveRejectdisenbl();
+                //$('#section-loader').show();
+                //loadPOListviewInbox();
+                //$('#preloader').hide();  
+                //Reset();
+            });
+            //wi_id = localStorage.getItem("wi_id");
+            username = localStorage.getItem("username");
+            ponumber = localStorage.getItem("ponumber");
+            totalcost = localStorage.getItem("totalcost");
+            type = localStorage.getItem("type");
+            vendor = localStorage.getItem("vendor");
+            requster = localStorage.getItem("requster");
+            id = localStorage.getItem("id");
+            wid = localStorage.getItem("wid");
+            requnameid = localStorage.getItem("requnameid");
+
+
+            function ApproveRejectdisenbl() {
+                //id = localStorage.getItem("id");
+                if ((id == 'approvedMainBlock') || (id == 'rejectedMainBlock')) {
+                    $("#approve").css("display", "none");
+                    $("#reject").css("display", "none");
+
+                    $.ajax(
+                            {
+                                url: "http://50.194.79.186:8000/sap/opu/odata/sap/Z_INTERNAL_APPS_SRV/z_get_poitems/?$filter=Ponum eq '"+ponumber+"'",
+                                type: 'GET',
+                                contentType: "application/xml;charset=utf-8",
+                                dataType: "",
+                                cache: false,
+                                success: function(data) {
+                                    debugger;
+                                    var POdetailreponse = $(data).find("content");
+                                    if (POdetailreponse.length == 0) {
+                                        $("#noItems").css("display", "block");
+                                    }
+                                    else {
+                                        $("#noItems").css("display", "none");
+                                        // i = 0;
+                                        $(data).find("content").each(function() {
+                                            $(this).find("m\\:properties, properties").each(function() {
+                                                debugger;
+                                                var $info = $(this);
+                                                var txz01 = $info.find("d\\:txz01, txz01").text();
+                                                var eindt = $info.find("d\\:eindt, eindt").text();
+                                                var werks = $info.find("d\\:werks, werks").text();
+                                                var menge = $info.find("d\\:menge, menge").text();
+                                                var netpr = $info.find("d\\:netpr, netpr").text();
+                                                var ebeln = $info.find("d\\:ebeln, ebeln").text();
+                                                var ebelp = $info.find("d\\:ebelp, ebelp").text();
+                                                podateformatstring = eindt.substring(0, 10);
+                                                $("#ponumber").html(werks);
+                                                $("#deliverydatepodetail").html(podateformatstring);
+
+                                                $('#POdetailtbl').append('<tr id="test"><td><a href="javascript:showPlantDetails()"><u><b>' + werks + '</b></u></a></td><td>' + txz01 + '</td><td>' + menge + '</td><td>' + ebelp + '</td><td>' + netpr + '</td><td>' + podateformatstring + '</td></tr>');
+                                                localStorage.setItem("werks", werks);
+                                            });
+                                        });
+                                        //$("#approve").css("display", "none");
+                                        $("#totalcostpodetail").html(totalcost);
+                                        $("#typepodetail").html(type);
+                                       // $("#vendorpodetail").html(vendor);
+//		                  	$("#ernam").html(ernam);
+//		                  	$("#requname").html(requname);
+//                                        $("#txtebeln").html(ebeln);
+                                       // $("#requesterpodetail").html(requster);
+                                       $('#vendorpodetail').append('<th>Vendor</th><td class=\"seperator\">:</td><td><a href ="POVendordetails.html"><b>' + vendor + '</b></a></td>');
+
+                                        $('#requesterpodetail').append('<th>Requester</th><td class=\"seperator\">:</td><td><a href = "PORequesterdetails.html"><b>' + requster + '</b></a></td>');
+
+                                        $("#ponumberpodetail").html(ponumber);
+                                        if (navigator.userAgent.match("Android") || navigator.userAgent.match("iPhone")
+                                                || navigator.userAgent.match("iPod")) {
+
+                                        }
+                                        ;
+                                    }
+                                },
+                                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                                    createAlertMessage("Alert", "Error", "alert", "e");
+                                }
+                            });
+                }
+                else
+                {
+
+                    $.ajax(
+                            {
+                                url: "http://50.194.79.186:8000/sap/opu/odata/sap/Z_INTERNAL_APPS_SRV/z_get_poitems/?$filter=Ponum eq '"+ponumber+"'",
+                                type: 'GET',
+                                contentType: "application/xml;charset=utf-8",
+                                dataType: "",
+                                cache: false,
+                                success: function(data) {
+                                    debugger;
+                                    var POdetailreponse = $(data).find("content");
+                                    if (POdetailreponse.length == 0) {
+                                        $("#noItems").css("display", "block");
+                                    }
+                                    else {
+                                        $("#noItems").css("display", "none");
+                                        // i = 0;
+                                        $(data).find("content").each(function() {
+                                            $(this).find("m\\:properties, properties").each(function() {
+                                                debugger;
+                                                var $info = $(this);
+                                                var txz01 = $info.find("d\\:txz01, txz01").text();
+                                                var eindt = $info.find("d\\:eindt, eindt").text();
+                                                var werks = $info.find("d\\:werks, werks").text();
+                                                var menge = $info.find("d\\:menge, menge").text();
+                                                var netpr = $info.find("d\\:netpr, netpr").text();
+                                                var ebeln = $info.find("d\\:ebeln, ebeln").text();
+                                                var ebelp = $info.find("d\\:ebelp, ebelp").text();
+                                                var meins = $info.find("d\\:meins, meins").text();
+                                                podateformatstring = eindt.substring(0, 10);
+                                                //var mengewhole=menge.toFixed(0);
+                                                $("#ponumber").html(werks);
+                                                $("#deliverydatepodetail").html(podateformatstring);
+
+                                                $('#POdetailtbl').append('<tr id="test"><td><a href="javascript:showPlantDetails()"><u><b>' + werks + '</b></u></a></td><td>' + txz01 + '</td><td>' + menge + '</td><td>' + meins + '</td><td>' + netpr + '</td><td>' + podateformatstring + '</td></tr>');
+                                                //$('#POdetailtbl').append('<tr id="test1"><td><a href="javascript:showPlantDetails()"><u><b>' + werks + '</b></u></a></td><td>'+txz01+'</td><td>'+menge+'</td><td>'+netpr+'</td><td>'+eindt+'</td></tr>');
+                                                //$('#POdetailtbl').append('<tr id="test"><td onclick="showPlantDetails()"><u><b>'+werks+'</b></u></td><td>'+txz01+'</td><td>'+menge+'</td><td>'+netpr+'</td><td>'+eindt+'</td></tr>');
+                                                //$("#deliverydate").html(eindt);
+                                                localStorage.setItem("werks", werks);
+                                            });
+                                        });
+                                        //$("#approve").css("display", "none");
+                                        $("#totalcostpodetail").html(totalcost);
+                                        $("#typepodetail").html(type);
+                                        // $("#vendorpodetail").html(vendor);
+//		                  	$("#ernam").html(ernam);
+//		                  	$("#requname").html(requname);
+//                                        $("#txtebeln").html(ebeln);
+
+
+//$("#requesterpodetail").html(requster);
+
+
+                                        $('#vendorpodetail').append('<th>Vendor</th><td class=\"seperator\">:</td><td><a href ="POVendordetails.html"><b>' + vendor + '</b></a></td>');
+
+                                        $('#requesterpodetail').append('<th>Requester</th><td class=\"seperator\">:</td><td><a href = "PORequesterdetails.html"><b>' + requster + '</b></a></td>');
+
+                                        $("#ponumberpodetail").html(ponumber);
+
+                                        if (navigator.userAgent.match("Android") || navigator.userAgent.match("iPhone")
+                                                || navigator.userAgent.match("iPod")) {
+//               $("#openpodate").hide();
+//               $('#GROpenPOprttbl td:nth-child(4)').hide();          
+                                        }
+                                        ;
+                                    }
+                                },
+                                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                                    createAlertMessage("Alert", "Error", "alert", "e");
+                                }
+                            });
+                }
+            }
+
+
+
+            function ApprovePO() {
+                if (username != "" && ponumber != "") {
+                    $.ajax({
+                        //url: "proxy/http/gyansys3.gyansys.com:8003/sap/opu/odata/sap/ZPO_CM_ITEMDETAILS/zpo_itemdetailsCollection(value='"+value+"',username='"+username+"',comments='',ponumber='"+ponumber+"')/return_r",
+                       // url: "http://50.194.79.186:8080/sap/inv/opu/odata/sap/ZPO_CM_APPROVAL/zpo_approvalCollection(username='" + username + "',comments='',wi_id='" + wid + "',ebeln='" + ponumber + "')/return_r",
+                        url: "http://50.194.79.186:8000/sap/opu/odata/sap/Z_INTERNAL_APPS_SRV/z_po_decision/?$filter=Decision eq 'APPROVE' and Ebeln eq '"+ponumber+"' and Username eq '"+username+"' and Wi_id eq '"+wid+"'",
+                        type: 'GET',
+                        contentType: "application/xml;charset=utf-8",
+                        dataType: "text",
+                        cache: false,
+                        success: function(data) {
+                            // var txz01 = $info.find("d\\:txz01, txz01").text();
+                            $(data).find("content").each(function() {
+                                $(this).find("m\\:properties, properties").each(function() {
+                                    var $info = $(this);
+//			                	var message = $info.find('message').text();
+//			                	var comments = $info.find('comments').text();
+//			                	var ebeln = $info.find('ebeln').text();
+
+                                    var message = $info.find("d\\:message, message").text();
+                                    var comments = $info.find("d\\:comments, comments").text();
+                                    var ebeln = $info.find("d\\:ebeln, ebeln").text();
+
+                                    if (ebeln == ponumber) {
+
+                                        $("#comments").html(comments);
+                                        //createAlertMessage("Alert", "message: " + message, "ApprovePodetails", "e");
+                                        createAlertMessage("Alert", message, "ApprovePodetails", "e");
+                                        //alert("message: " + message);
+                                        //window.location = "POListView.html";
+                                        //location.refresh();
+                                    }
+                                });
+                            });
+                        },
+                        error: function(XMLHttpRequest, textStatus, errorThrown) {
+                            createAlertMessage("Error", "Error: " + errorThrown, "alert", "e");
+                        }
+                    });
+
+                }
+            }
+
+            function RejectPO() {
+
+                //alert("testing reject function");
+
+                $.ajax({
+                    url: "http://50.194.79.186:8000/sap/opu/odata/sap/Z_INTERNAL_APPS_SRV/z_po_decision/?$filter=Decision eq 'REJECT' and Ebeln eq '"+ponumber+"' and Username eq '"+username+"' and Wi_id eq '"+wid+"'",
+                    type: 'GET',
+                    contentType: "application/xml;charset=utf-8",
+                    dataType: "text",
+                    cache: false,
+                    success: function(data) {
+                        $(data).find("content").each(function() {
+                            $(this).find("m\\:properties, properties").each(function() {
+                                var $info = $(this);
+                                //var message = $info.find('message').text();
+                                var message = $info.find("d\\:message, message").text();
+                                //var comments = $info.find('comments').text();
+                                //var po_num = $info.find('po_num').text();
+                                var po_num = $info.find("d\\:Ebeln, Ebeln").text();
+                                //var wi_id = $info.find('wi_id').text();
+
+                                if (po_num == ponumber) {
+                                    //$("#Comments").html(comments);
+                                    //$("#Wi_id").html(wi_id);
+                                    //alert('Textbox value " + Server.HtmlEncode(txtYourTextBox.Text) + "');
+                                    // var retVal = prompt("Comments ", "");
+                                    // alert("Comments: " +  retVal );
+                                    //alert("message: " + message);
+                                    //createAlertMessage("Alert", "message: " + message, "RejectPodetails", "e");
+                                    createAlertMessage("Alert", message, "RejectPodetails", "e");
+                                    //window.location = "POListView.html";
+                                    //location.refresh();
+                                }
+                            });
+                        });
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        createAlertMessage("Error", "Error: " + errorThrown, "alert", "e");
+                    }
+                });
+            }
+
+
+            function showPlantDetails() {
+                window.location = "POPlantdetails.html";
+            }
+
+            function showVendorDetails() {
+                window.location = "POVendordetails.html";
+            }
+            function showRequestorDetails() {
+                window.location = "PORequesterdetails.html";
+            }
+
+            function Reset() {
+                debugger;
+                conHeight = $('.content-area').outerHeight() - $('.content-container').height();
+                hdrHeight = $('.main-header').outerHeight() + $('.info-bar').outerHeight();
+                $('.content-container').height($(window).height() - (hdrHeight + conHeight));
+                //$('.scrollable-area').height($(window).height() - (hdrHeight + conHeight));
+                // $('#maindiv').height($(window).height() - (hdrHeight + conHeight));
+                //$('#maindivconf').height($(window).height() - (hdrHeight + conHeight));
+                $('.content-container').css("min-height", $(window).height() - (hdrHeight + conHeight));
+
+                if (navigator.userAgent.match("iPad")) {
+                    $('.content-container').css("min-height", 968);
+                    $('.wrapper').css("max-width", 1024);
+
+                }
+
+            }
+            ;
+
+            createAlertMessage = function(header, message, type, e) {
+                $(".model-screen").css("display", "block");
+                $("#header").text(header);
+                $("#alertMessage").text(message);
+                if (message.length > 40) {
+                    $(".model-container").height("118px");
+                } else {
+                    $(".model-container").removeAttr('style');
+                }
+                if (type === "alert") {
+                    $("#ok").val('OK');
+                    $("#cancelAlert").css("display", "none");
+                    $("#ok").click(function() {
+                        //   location.href = "https://192.168.2.119:8080/GoodsReceipt-1.0/GROpenPO.html";
+
+                        $(".model-screen").css("display", "none");
+
+                    });
+
+                }
+
+                else if (type === "confirm") {
+                    $("#ok").val('OK');
+                    $("#cancelAlert").val('Cancel');
+                    $("#cancelAlert").css("display", "inline-block");
+                    $("#ok").click(function() {
+                        location.href = "http://50.194.79.186:8080/POApprovalApp/PODetail.html";
+                    });
+                    $("#cancelAlert").click(function() {
+                        $(".model-screen").css("display", "none");
+                    });
+                } else if (type === "continue") {
+                    $("#ok").val('OK');
+                    $("#cancelAlert").val('Cancel');
+                    $("#cancelAlert").css("display", "inline-block");
+                }
+                else if (type === "stay") {
+                    $("#ok").val('OK');
+                    $("#cancelAlert").val('Cancel');
+                    $("#cancelAlert").css("display", "inline-block");
+                    $("#ok").click(function() {
+                        location.href = "http://50.194.79.186:8080/POApprovalApp/PODetail.html";
+                    });
+                }
+                else if (type === "Podetaillogout") {
+                    $("#ok").val('OK');
+                    $("#cancelAlert").val('Cancel');
+                    $("#cancelAlert").css("display", "inline-block");
+                    $("#ok").click(function() {
+                        location.href = "http://50.194.79.186:8080/POApprovalApp/Login.html";
+                    });
+                    $("#cancelAlert").click(function() {
+                        $(".model-screen").css("display", "none");
+                        //location.href = "http://50.194.79.186:8080/POApprovalUpdated-1.0/PODetail.html";
+
+                    });
+                }
+                else if (type === "ApprovePodetails") {
+                    $("#ok").val('OK');
+                    $("#cancelAlert").css("display", "none");
+                    $("#ok").click(function() {
+                        location.href = "http://50.194.79.186:8080/POApprovalApp/POListView.html";
+
+                        //$(".model-screen").css("display", "none");
+
+                    });
+
+                }
+                else if (type === "RejectPodetails") {
+                    $("#ok").val('OK');
+                    $("#cancelAlert").css("display", "none");
+                    $("#ok").click(function() {
+                        location.href = "http://50.194.79.186:8080/POApprovalApp/POListView.html";
+
+                        //$(".model-screen").css("display", "none");
+
+                    });
+
+                }
+            };
+
+
+
+
+        </script>
+        <link href="stylesheets/screenC.css" media="screen, projection" rel="stylesheet" type="text/css" />
+
+    </head>
+    <body class="bodyclass">
+
+        <div class="section-loader"></div>
+        <img src="images/section-loader.gif" id="section-loaderdetail" style="display:none;"/>
+
+        <section id="homeWrapper" class="wrapper">
+            <header class="main-header">
+                <a href="http://50.194.79.186:8080/POApprovalApp/POListView.html" class="appstore-btn">Back</a>
+                <h1 class="logo">Gyansys</h1>
+                <a id="logOut" href='javascript:createAlertMessage("Logout","Are you sure you want to Logout?","Podetaillogout","e")' class="logut-btn">Logout</a>
+
+            </header>
+            <div class="info-bar"  style="text-align: center;">Purchase Order</div>
+            <section class="content-area" style="">
+                <div class="content-container clearfix" style="overflow-y: scroll;">
+                    <div class="scrollable-area" id="maindiv" style="height: initial;">
+
+
+                        <div>&nbsp;</div>
+
+                        <table class="invoice-table">
+
+                            <tr>
+                                <th>PO Number</th>
+                                <td class="seperator">:</td>
+                                <td id="ponumberpodetail"></td>
+                            </tr>
+                            <tr>
+                                <th>Total Cost</th>
+                                <td class="seperator">:</td>
+                                <td id="totalcostpodetail"></td>
+                            </tr>
+                            <tr>
+                                <th>Type</th>
+                                <td class="seperator">:</td>
+                                <td id="typepodetail"></td>
+                            </tr>
+                            <tr>
+                                <th>Delivery Date</th>
+                                <td class="seperator">:</td>
+                                <td id="deliverydatepodetail"></td>
+                            </tr>
+                            <tr id="vendorpodetail"> </tr>
+
+                            <tr id="requesterpodetail"> </tr>
+
+                            <tbody>
+                            </tbody>
+                        </table>
+                        <div class="invoice-actions clearfix" style="display: block;">
+                            <button id="approve" class="approve-btn"  onclick="ApprovePO();">Approve</button>
+                            <button id="reject" class="reject-btn" onclick="RejectPO();">Reject</button>
+                        </div>
+                        <h3 class="table-title" style="margin: 0;">Item Details</h3>
+
+
+                        <table class="main-grid-view" style="" id ="podetailmaintbl">
+                            <thead>
+                                <tr>
+                                    <!--                                            <th class="clikable" style="width:10%; align:centre"><span id="openpochk"></span></th>-->
+                                    <th><span>Ship to</span></th>
+                                    <th><span>Description</span> </th>
+                                    <!--                                            <th id="openpodate"><span id="invDate">PO Date</span> </th>-->
+                                    <th><span>Quantity</span> </th>
+                                    <th><span>Unit</span> </th>
+                                    <th><span>Total Cost</span> </th>
+                                    <th><span>Delivery Date</span> </th>
+                                </tr>
+                            </thead>
+                            <tbody id="POdetailtbl"></tbody>
+                        </table>
+
+                    </div>
+
+                    <div id="noItems" style="display: none; padding: 45px 0; text-align: center;">No Items to display</div>
+                </div>
+
+            </section><!-- .content-area -->
+            <div class="model-screen">
+                <div class="model-container" id="alertbox">
+                    <header><span id="header">Logout</span></header>
+                    <div class="model-body clearfix">
+                        <h5 id="alertMessage">Are you sure you want to logout?</h5>
+                        <input id="ok" type="submit" class="submit-btn" value="OK" />
+                        <input id="cancelAlert" type="submit" class="cancel-btn" value="Cancel" />
+                    </div>
+                </div>
+            </div><!-- .model-screen -->
+        </section><!-- .wraapper -->
+        <!--<div class="page-overlay"><span>Please <a href="#">Login</a> to view</span></div>-->            
+    </body> 
+</html>
