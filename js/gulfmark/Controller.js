@@ -99,24 +99,25 @@ createAlertMessage = function(header, message, type, e) {
 function loadPOListviewInbox(){
 //$('#section-loader').show();
 //$('#Polistviewtbl').empty();
-	alert("1");
+	
 $("#approvedMainBlock").removeClass("active");
-alert("2");
+
 $("#rejectedMainBlock").removeClass("active");
-alert("3");
+
 $("#inboxMainBlock").addClass("active");
-alert("4");
+
 var username = localStorage.getItem("username");
+
 alert("5" + username);
 //Username="ANOOP";
 
 
 OData.read( 
-		  "http://50.194.79.186:8000/sap/opu/odata/sap/Z_INTERNAL_APPS_SRV/z_get_polist/?$filter=Username eq 'RKOMIRISETTY' and Value eq '002'", 
+		  "http://50.194.79.186:8000/sap/opu/odata/sap/Z_INTERNAL_APPS_SRV/z_get_polist/?$filter=Username eq 'PMUDDA' and Value eq '001'", 
 		  function (data) { 
 			  $('#Polistviewtbl').empty();
 	            var POlistreponse =  $(data).find("content");
-	            alert("POlistreponse "+POlistreponse);
+	            alert("POlistreponse "+POlistreponse.length);
 	          if (POlistreponse.length == 0){
 	              //  msg = "Sorry,no data available for the corresponding user";
 	          $("#noItems").css("display", "block");
@@ -133,7 +134,7 @@ OData.read(
 	                 netwr = l.Netwr;
 	                var wi_id = l.wi_id;
                         lifnr = l.Lifnr;
-                       var ernam = l.Lifnr;
+                       var ernam = "";
                        var requnameid = l.Requname;
                         requestor = l.Requestor;
                        
@@ -148,7 +149,7 @@ OData.read(
 	    alert("TYPE wi_id-----"+l+"--"+wi_id);
 	    alert("TYPE lifnr-----"+l+"--"+lifnr); 
 	    alert("TYPE ernam-----"+l+"--"+ernam);
-	    alert("TYPE requnameid-----"+l+"--"+requestor);
+	    alert("TYPE requnameid-----"+l+"--"+Requname);
 	    alert("TYPE requestor-----"+l+"--"+requestor);
 	    
 	    
