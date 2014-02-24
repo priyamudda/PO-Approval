@@ -104,12 +104,29 @@ function userAuthentication(username, password) {
 			    		{ 
 			    			type= l.Type; 
 			    		}); 
-			    alert("TYPE-----"+type)
+			    alert("TYPE Success-----"+type);
+/* 			    if(type==="E")
+                {
+                    //$(".error-msg").text("Authentication Failed.");
+                    createAlertMessage("Error","Please enter correct username and password" ,"alert","e");
+//                    $('#username').val('');
+//                    $('#password').val('');
+//                    $('#username').focus();
+                } */
+                if(type==="S")
+                {
+                      localStorage.setItem("username", username);
+                      window.location = "POListView.html";
+                      //alert("TYPE Success-----"+type);
+                }
+			   // alert("TYPE-----"+type)
 			    
 			  },
-	                                function(err) {
-	                                    alert("Read failed. \nError code " + err.response.statusCode + ". \n" + err.response.message);
-	                                } 
+	            function(err) {
+				  createAlertMessage("Error","Please enter correct username and password" ,"alert","e");
+
+//	                      alert("Read failed. \nError code " + err.response.statusCode + ". \n" + err.response.message);
+	                          } 
 			);
 
 }
